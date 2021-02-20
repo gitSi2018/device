@@ -25,7 +25,7 @@ public class BaseMsgIn extends Base{
     private MsgHead msgHead;
 
     /**
-     * 一个字节
+     * 一个字节。 在消息体之后
      */
     private Integer checkCode;
 

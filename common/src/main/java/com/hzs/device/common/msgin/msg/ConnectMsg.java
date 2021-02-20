@@ -4,6 +4,8 @@ import com.hzs.device.common.msgin.BaseMsgIn;
 import lombok.Data;
 import lombok.ToString;
 
+import io.netty.channel.socket.SocketChannel;
+
 /**
  * @author: HongZhenSi
  * @date: 2021/1/30
@@ -13,7 +15,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class ConnectMsgIn extends BaseMsgIn {
+public class ConnectMsg extends BaseMsgIn {
 
     /**
      * 省域ID
@@ -66,4 +68,15 @@ public class ConnectMsgIn extends BaseMsgIn {
      *
      */
     private String deviceNo;
+
+
+    /**
+     * 该设备与后台连接的通道
+     */
+    private SocketChannel channel;
+
+    /**
+     * 该设备与后台连接的通道的id
+     */
+    private String channelIdStr;
 }

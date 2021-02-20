@@ -45,11 +45,11 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
 
     }
 
-    private static SmartMsgDeal smartMsgDeal;
+    private static DeviceMsgDeal smartMsgDeal;
 
 //    @PostConstruct
     static {
-        smartMsgDeal = SpringBeanUtils.getBean(SmartMsgDeal.class);
+        smartMsgDeal = SpringBeanUtils.getBean(DeviceMsgDeal.class);
     }
 
 

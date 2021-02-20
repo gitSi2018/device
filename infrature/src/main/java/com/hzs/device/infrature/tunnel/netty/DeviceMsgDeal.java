@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class SmartMsgDeal {
+public class DeviceMsgDeal {
 
 
     private static final Map<String, MsgDealService> serviceMap = new ConcurrentHashMap<>();
 
     @Autowired
-    public SmartMsgDeal(List<MsgDealService> services){
+    public DeviceMsgDeal(List<MsgDealService> services){
 
         for (int i = 0; i < services.size(); i++){
             MsgDealService s = services.get(i);

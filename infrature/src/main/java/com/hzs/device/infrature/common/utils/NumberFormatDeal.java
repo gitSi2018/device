@@ -29,4 +29,20 @@ public class NumberFormatDeal {
         log.info("sixteenFormat msgs:{}", msgs);
         return msgs;
     }
+
+    public static String[] toBinaryString(List<Integer> datas, int radix){
+
+        String[] strings = new String[datas.size()];
+        for (int i = 0; i < datas.size(); i++){
+            strings[i] = toBinaryString(datas.get(i), 16);
+        }
+        return strings;
+    }
+
+    public static String toBinaryString(Integer data, int radix){
+
+        int temp = Integer.parseInt(data + "", radix );
+        String string = String.format(Integer.toBinaryString(temp));
+        return string;
+    }
 }
