@@ -3,7 +3,6 @@ package com.hzs.device.infrature.tunnel.netty;
 import com.hzs.device.common.constant.ResultCodeConstant;
 import com.hzs.device.common.enums.MsgSendIDEnum;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
-import com.hzs.device.infrature.tunnel.netty.NettySentMsgToDevice;
 import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
 import com.hzs.device.infrature.tunnel.netty.msgout.MsgOutServiceI;
 import io.netty.channel.Channel;

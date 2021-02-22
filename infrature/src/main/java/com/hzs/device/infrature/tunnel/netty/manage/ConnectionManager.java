@@ -24,6 +24,22 @@ public class ConnectionManager {
 
     private static final Map<String, Long> heatBeatMap = new ConcurrentHashMap<>();
 
+    public Map<String, ConnectMsg> getDeviceIdMap(){
+
+        return deviceIdMap;
+    }
+
+    public  Map<String, String> getConnMap(){
+
+        return connMap;
+    }
+
+    public Map<String, Long> getHeatBeatMap(){
+
+        return heatBeatMap;
+    }
+
+
     public ConnectMsg getConnectMsgInByDeviceId(String deviceId){
 
         ConnectMsg connectMsg =  deviceIdMap.get(deviceId);
@@ -54,7 +70,9 @@ public class ConnectionManager {
 
     public String addConnectMsgInByConnectId(String connectId, ConnectMsg msgIn){
 
+        log.info("ConnectionManager addConnectMsgInByConnectId connectId:{}, msgIn:{}", connectId,msgIn );
         deviceIdMap.put(msgIn.getDeviceId(), msgIn);
+        addHeatBeatMap(connectId, System.currentTimeMillis());
         return connMap.put(connectId, msgIn.getDeviceId());
     }
 
