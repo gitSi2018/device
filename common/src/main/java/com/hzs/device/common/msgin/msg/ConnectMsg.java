@@ -79,4 +79,10 @@ public class ConnectMsg extends BaseMsgIn {
      * 该设备与后台连接的通道的id
      */
     private String channelIdStr;
+
+    /**
+     * 0 - 在线
+     * 10 - 掉线
+     */
+    private int status;
 }

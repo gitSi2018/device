@@ -25,7 +25,7 @@ public class ConnectionCheckTask {
     @Resource
     private ConnectionManager connectionManager;
 
-    @Scheduled(fixedDelay = 6000L)
+    @Scheduled(fixedDelay = 30000L)
     public void statusPrint(){
 
         try {
@@ -52,7 +52,7 @@ public class ConnectionCheckTask {
             }
 
 
-            if (CollectionUtils.isEmpty(connMap.keySet())){
+            if (CollectionUtils.isEmpty(heatBeatMap.keySet())){
                 log.info("heatBeatMap is empty");
             }
             for (String key : heatBeatMap.keySet()) {
@@ -62,5 +62,37 @@ public class ConnectionCheckTask {
 
             log.error("ConnectionCheckTask statusPrint error.", e);
         }
+    }
+
+    @Scheduled(fixedDelay = 100000L)
+    public void checkDeadConnection(){
+
+        try {
+            Map<String, Long> heatBeatMap = connectionManager.getHeatBeatMap();
+            if (CollectionUtils.isEmpty(heatBeatMap.keySet())) {
+                log.info("heatBeatMap is empty");
+            }
+            for (String key : heatBeatMap.keySet()) {
+                log.info("heatBeatMap key:{}, value:{}", key, heatBeatMap.get(key));
+                Long value = heatBeatMap.get(key);
+                if (isOffline(value)) {
+                    try {
+                        connectionManager.dealOffline(key);
+                    } catch (Exception e) {
+
+                        log.error("checkDeadConnection error. key:{}, value:{}", key, value, e);
+                    }
+                }
+            }
+        }catch (Throwable e){
+
+            log.error("checkDeadConnection error ", e);
+        }
+
+    }
+
+    private boolean isOffline(Long lastHeatBeatTime){
+
+        return lastHeatBeatTime == null || System.currentTimeMillis() - lastHeatBeatTime > 120 * 1000;
     }
 }

@@ -57,7 +57,7 @@ public class MsgOutDeal {
 
         }
         List<Integer> sendData = msgOutServiceI.getMsgData(deviceId, data);
-        log.warn("MsgOutDeal sendMsg. deviceId:{}, sendIDEnum:{}, data:{}, sendData:{}",
+        log.info("MsgOutDeal sendMsg. deviceId:{}, sendIDEnum:{}, data:{}, sendData:{}",
                 deviceId, sendIDEnum, data, sendData);
         return sendToDevice(sendData, connectMsg.getChannel());
 

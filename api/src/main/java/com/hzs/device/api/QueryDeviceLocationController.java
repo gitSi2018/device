@@ -33,10 +33,10 @@ public class QueryDeviceLocationController {
     @Resource
     private MsgOutDeal msgOutDeal;
 
-    @GetMapping("send")
-    public Result sendQueryLocationMsg(){
+    @GetMapping("query")
+    public Integer sendQueryLocationMsg(@RequestParam("deviceId") String deviceId){
 
-        return null;
+        return msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.QUERY_LOCATION, new Integer[0]);
     }
 
     @GetMapping("temp/control")

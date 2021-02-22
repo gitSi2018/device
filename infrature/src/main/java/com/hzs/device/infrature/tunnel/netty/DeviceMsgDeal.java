@@ -36,7 +36,7 @@ public class DeviceMsgDeal {
             log.warn("SmartMsgManager isLegalMsg false. msg is empty. msg:{}", msg);
             return false;
         }
-        if (CommonConstant.FIRST_HEAD != msg.get(0)){
+        if (CommonConstant.FIRST_HEAD != msg.get(0) || CommonConstant.LAST_DATA != msg.get(msg.size() - 1)){
             log.warn("SmartMsgManager isLegalMsg false. msg head illegal. msg:{}", msg);
             return false;
         }

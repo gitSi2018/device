@@ -4,7 +4,7 @@ import com.hzs.device.common.enums.MsgSendIDEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /**
  * @author: HongZhenSi
@@ -20,6 +20,11 @@ public class MsgNumberManager {
 
     public List<Integer> getMsgNum(MsgSendIDEnum msgSendIDEnum){
 
-        return new ArrayList<>(2);
+        Integer[] msgNum = new Integer[2];
+        int num = (int)(System.currentTimeMillis() & Integer.valueOf("1111111111111111", 2));
+        msgNum[1] = (num & Integer.valueOf("11111111", 2));
+        msgNum[0] =(num >> 8);
+        log.info("MsgNumberManager msgSendIDEnum:{}, msgNum:{}", msgSendIDEnum, msgNum);
+        return Arrays.asList(msgNum);
     }
 }

@@ -55,7 +55,7 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
 
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
 
         log.info("ctx:{}, msg:{}", ctx, msg);
         ByteBuf in = (ByteBuf) msg;
@@ -78,6 +78,15 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
                         // 更新对应的设备状态
 
                         smartMsgDeal.dealMsg(code, context);
+                    }else {
+                        try {
+
+                            log.warn("MsgInTunnelHandler channelRead, illegal connection. will be close. code:{}",code);
+                            ctx.close();
+                        }catch (Throwable t){
+
+                            log.error("MsgInTunnelHandler channelRead close ctx failed.", t);
+                        }
                     }
                 }
             });

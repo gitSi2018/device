@@ -1,8 +1,10 @@
 package com.hzs.device.infrature.tunnel.netty.manage;
 
 import com.hzs.device.common.msgin.msg.ConnectMsg;
+import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +41,27 @@ public class ConnectionManager {
         return heatBeatMap;
     }
 
+
+    public void dealOffline(String connectId){
+
+        if (StringUtils.isEmpty(connectId)){
+
+            return;
+        }
+        ConnectMsg connectMsg = getConnectMsgInByConnectId(connectId);
+        if (!StringUtils.isEmpty(connectMsg.getDeviceId())) {
+            deviceIdMap.remove(connectMsg.getDeviceId());
+        }
+        SocketChannel channel = connectMsg.getChannel();
+        if (channel != null && channel.isActive()){
+
+            log.info("ConnectionManager dealOffline, channel will be close. connectId:{}, channel:{}", connectId, channel);
+            channel.close();
+        }
+        connMap.remove(connectId);
+        heatBeatMap.remove(connectId);
+
+    }
 
     public ConnectMsg getConnectMsgInByDeviceId(String deviceId){
 
