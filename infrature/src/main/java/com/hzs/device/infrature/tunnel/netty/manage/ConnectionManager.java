@@ -49,6 +49,11 @@ public class ConnectionManager {
             return;
         }
         ConnectMsg connectMsg = getConnectMsgInByConnectId(connectId);
+        if (connectMsg == null){
+
+            log.warn("ConnectionManager dealOffline connectMsg is null. connectId:{}", connectId);
+            return;
+        }
         if (!StringUtils.isEmpty(connectMsg.getDeviceId())) {
             deviceIdMap.remove(connectMsg.getDeviceId());
         }
@@ -101,6 +106,7 @@ public class ConnectionManager {
 
     public boolean addHeatBeatMap(String connectId, Long beatTime){
 
+        log.info("ConnectionManager addHeatBeatMap, connectId:{}, beatTime:{}", connectId, beatTime);
         heatBeatMap.put(connectId, beatTime);
         return true;
     }

@@ -9,6 +9,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.CharBuffer;
 import java.util.concurrent.*;
 
 
@@ -54,6 +55,7 @@ public class NettySentMsgToDevice {
                     });
                 }
             });
+            log.info("NettySentMsgToDevice sentToClient succeed, ctx:{} buf:{}", channel.isActive(), buf);
             return true;
         }catch (Throwable t){
 

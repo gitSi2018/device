@@ -47,6 +47,7 @@ public class HeatBeatDeal extends MsgDealServiceAbstract{
             log.warn("HeatBeatDeal execute, channelId:{}, context:{}", channelId, context);
             return false;
         }
+
         return connectionManager.addHeatBeatMap(channelId, System.currentTimeMillis());
     }
 

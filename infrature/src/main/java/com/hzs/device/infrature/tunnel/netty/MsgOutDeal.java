@@ -63,7 +63,7 @@ public class MsgOutDeal {
 
     }
 
-    private int sendToDevice(List<Integer> newMsgSend, Channel channel){
+    public int sendToDevice(List<Integer> newMsgSend, Channel channel){
 
         // 拼接头尾 求校验和
 
@@ -83,6 +83,17 @@ public class MsgOutDeal {
                 msg, channel);
         return NettySentMsgToDevice.sentToClient(channel, msg) ?
                 ResultCodeConstant.SEND_ORDER_SUCCEED : ResultCodeConstant.CHANNEL_IS_INACTIVE;
+    }
+
+
+    public static void main(String[] args) {
+
+        int a = 0x82;
+
+        byte b = (byte)a;
+
+        log.info("b:{}", b & 0xFF);
+        log.info("c:{}", new Integer(a).byteValue() & 0xFF);
     }
 
 }

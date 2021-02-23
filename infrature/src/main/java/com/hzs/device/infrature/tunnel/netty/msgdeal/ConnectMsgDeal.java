@@ -2,11 +2,14 @@ package com.hzs.device.infrature.tunnel.netty.msgdeal;
 
 import com.hzs.device.common.msgin.BaseMsgIn;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
+import com.hzs.device.infrature.tunnel.netty.MsgOutDeal;
+import com.hzs.device.infrature.tunnel.netty.msgout.ConnectResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -23,6 +26,12 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
 
 
 
+
+    @Resource
+    private ConnectResponse connectResponse;
+
+    @Resource
+    private MsgOutDeal msgOutDeal;
 
     @Override
     public String getPoint() {
@@ -42,6 +51,8 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
 
         ConnectMsg msgIn = convert(msg, context);
         connectionManager.addConnectMsgInByConnectId(msgIn.getChannelIdStr(), msgIn);
+        List<Integer>  responseData = connectResponse.getMsgData(msgIn.getDeviceId(), 0, 0, 0);
+        msgOutDeal.sendToDevice(responseData, msgIn.getChannel());
         return true;
     }
 
@@ -69,16 +80,40 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
     //
     private String generateDeviceId(List<Integer> msg){
 
-        List<Integer> deviceIds = msg.subList(30, 37);
-        StringBuilder deviceId = new StringBuilder();
-        for(int i = 0; i < 7; i++){
+        List<Integer> deviceIds = msg.subList(5, 11);
+        StringBuilder deviceIdStr = new StringBuilder();
+        for(int i = 0; i < 6; i++){
 
-            String tempStr = deviceIds.get(i) + "";
-            int code = Integer.parseInt(tempStr, 16);
+            String code = Integer.toString(deviceIds.get(i), 16);
+            if (code.length() < 2){
+                code = "0" + code;
+            }
             log.info("device index:{}, code:{}", i, code);
-            deviceId.append((char)code);
+            deviceIdStr.append(code);
         }
-        return deviceId.toString();
+        return deviceIdStr.toString();
+    }
+
+    public static void main(String[] args) {
+
+
+        int[] a = {126,1,0,0,45,7,3,80,0,66,130,0,0,0,42,8,82,49,50,51,52,53,51,53,51,51,55,48,51,53,0,0,0,0,0,0,0,0,0,0,0,0,48,48,48,52,50,56,50,255,212,193,66,56,56,56,56,56,82,126};
+        log.info("char 0:{}", (char)0 + "");
+
+        int[]  b  = {7, 3, 80, 0, 66, 130};
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < b.length; i++){
+
+            log.info("index{}:{}", i, Integer.toString(b[i], 16));
+//            builder.append(String.format("%08d", Integer.parseInt(Integer.toBinaryString(b[i]))));
+        }
+        log.info("phone:{}", builder.toString());
+
+        int[] c = {0x39, 0x39, 0x39 , 0x39 , 0x31 , 0x31 , 0x38};
+        for (int i = 0 ; i < c.length; i++){
+
+            log.info("c:{}", c);
+        }
     }
 
 }

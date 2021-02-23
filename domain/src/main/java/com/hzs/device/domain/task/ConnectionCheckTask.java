@@ -77,6 +77,7 @@ public class ConnectionCheckTask {
                 Long value = heatBeatMap.get(key);
                 if (isOffline(value)) {
                     try {
+                        log.info("checkDeadConnection device is offline. heatBeatMap key:{}, value:{}", key, heatBeatMap.get(key));
                         connectionManager.dealOffline(key);
                     } catch (Exception e) {
 

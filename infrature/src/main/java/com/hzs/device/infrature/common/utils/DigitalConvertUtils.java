@@ -32,7 +32,10 @@ public class DigitalConvertUtils {
     public static void main(String[] args) {
 
 
-        Integer[] test = {0x07, 0x03, 0x50, 0x00, 0x42, 0x82};
+        Integer[] test =
+             //   {0x07, 0x03, 0x50, 0x00, 0x42, 0x82};
+                {0, 42};
+
         System.out.println(convert(10, test) + "");
 
         Integer num = Integer.valueOf("56", 10);

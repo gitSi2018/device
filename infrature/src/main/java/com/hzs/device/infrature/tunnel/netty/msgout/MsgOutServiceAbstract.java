@@ -2,6 +2,7 @@ package com.hzs.device.infrature.tunnel.netty.msgout;
 
 import com.hzs.device.common.enums.MsgSendIDEnum;
 import com.hzs.device.infrature.tunnel.mysql.manager.MsgNumberManager;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
  * @description:
  * @version: 1.0
  */
+@Slf4j
 public abstract class MsgOutServiceAbstract implements MsgOutServiceI{
 
 
@@ -23,9 +25,25 @@ public abstract class MsgOutServiceAbstract implements MsgOutServiceI{
     private MsgNumberManager msgNumberManager;
 
 
-    public List<Integer> phoneToArrays(String deviceId){
+    public static List<Integer> phoneToArrays(String deviceId){
 
-        return Arrays.asList(0x99, 0x99, 0x99, 0x99, 0x91, 0x18);
+        char[] chars = deviceId.toCharArray();
+        Integer[] phoneDatas = new Integer[6];
+        for (int i = 0; i < chars.length; i++){
+
+            int temp1 = (chars[i] - '0') << 4;
+            int temp2 = chars[i++ + 1] - '0';
+            phoneDatas[i / 2] = temp1 | temp2;
+
+        }
+        return Arrays.asList(phoneDatas);
+    }
+
+    public static void main(String[] args) {
+
+        List<Integer> list = phoneToArrays("070350004282");
+
+        log.info("MsgOutServiceAbstract list:{}", list);
     }
 
    public List<Integer>  getMsgNum(MsgSendIDEnum msgSendIDEnum){
