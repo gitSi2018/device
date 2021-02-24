@@ -21,6 +21,8 @@ public enum MsgSendIDEnum {
     TEMP_LOCATION_CONTROL(Arrays.asList(0x82, 0x02), "TEMP_LOCATION_CONTROL"),
 
     CONNECTION_RESPONSE(Arrays.asList(0x81, 0x00), "CONNECTION_RESPONSE"),
+
+    DEVICE_CONTROL(Arrays.asList(0x81, 0x05), "DEVICE_CONTROL"),
     ;
 
 

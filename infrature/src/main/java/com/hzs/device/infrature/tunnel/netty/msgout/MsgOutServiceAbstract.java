@@ -70,6 +70,9 @@ public abstract class MsgOutServiceAbstract implements MsgOutServiceI{
         newMsgSend.addAll(msgSend);
         int checkSum = calculateCheckSum(msgSend);
         newMsgSend.addAll(Arrays.asList(checkSum, 126));
+
+        log.info("MsgOutServiceAbstract generateLastMsg msgSend:{},  newMsgSend:{}",
+                msgSend, newMsgSend);
         return newMsgSend;
     }
 }

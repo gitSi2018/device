@@ -56,4 +56,12 @@ public class Result<T> extends Base {
         return result;
     }
 
+    public static <T> Result<T> failed(int errorCode){
+
+        Result<T> result = new Result<>();
+        result.setCode(errorCode);
+        result.setMsg("error");
+        return result;
+    }
+
 }

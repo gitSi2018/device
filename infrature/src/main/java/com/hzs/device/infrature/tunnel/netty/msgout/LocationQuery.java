@@ -54,7 +54,7 @@ public class LocationQuery extends MsgOutServiceAbstract{
         //id
         msgSend.addAll(MsgSendIDEnum.QUERY_LOCATION.getMsgId());
         //消息属性
-        msgSend.addAll(Arrays.asList(0x00, 0x00));
+        msgSend.addAll(Arrays.asList(0x00, 0x08));
         //手机号
         msgSend.addAll(phoneToArrays(deviceId));
         //消息流水号

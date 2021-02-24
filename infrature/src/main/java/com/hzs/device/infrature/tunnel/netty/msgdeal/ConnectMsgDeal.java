@@ -51,7 +51,9 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
 
         ConnectMsg msgIn = convert(msg, context);
         connectionManager.addConnectMsgInByConnectId(msgIn.getChannelIdStr(), msgIn);
-        List<Integer>  responseData = connectResponse.getMsgData(msgIn.getDeviceId(), 0, 0, 0);
+        Integer[] orderNum = msgIn.getMsgOrderNum();
+        List<Integer>  responseData = connectResponse.getMsgData(msgIn.getDeviceId(),
+                orderNum[0], orderNum[1], 0, 65);
         msgOutDeal.sendToDevice(responseData, msgIn.getChannel());
         return true;
     }
@@ -61,7 +63,7 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
     //消息体
     //校验码 为1 byte
     //标志位
-    private ConnectMsg convert(List<Integer> msg, ChannelHandlerContext context){
+    ConnectMsg convert(List<Integer> msg, ChannelHandlerContext context){
 
         ConnectMsg msgIn = new ConnectMsg();
         SocketChannel channel  = getChannel(context);
@@ -69,12 +71,22 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
         msgIn.setChannelIdStr(getChannelId(channel));
 
         msgIn.setDeviceId(generateDeviceId(msg));
+
+        msgIn.setMsgOrderNum(connectOrderNum(msg));
         // 车牌号
         msgIn.setDeviceNo("");
 
         msgIn.setDeviceType("");
         msgIn.setColor("");
         return msgIn;
+    }
+
+    private Integer[] connectOrderNum(List<Integer> msg){
+
+        Integer[] orderNum = new Integer[2];
+        orderNum[0] = msg.get(12);
+        orderNum[1] = msg.get(13);
+        return orderNum;
     }
 
     //

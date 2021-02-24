@@ -94,6 +94,6 @@ public class ConnectionCheckTask {
 
     private boolean isOffline(Long lastHeatBeatTime){
 
-        return lastHeatBeatTime == null || System.currentTimeMillis() - lastHeatBeatTime > 120 * 1000;
+        return lastHeatBeatTime == null || System.currentTimeMillis() - lastHeatBeatTime > 600 * 1000;
     }
 }

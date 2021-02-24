@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class HeatBeatDeal extends MsgDealServiceAbstract{
+public class HeatBeatDeal extends ConnectMsgDeal{
 
 
     @Resource
@@ -45,8 +45,11 @@ public class HeatBeatDeal extends MsgDealServiceAbstract{
         if (connectMsg == null){
 
             log.warn("HeatBeatDeal execute, channelId:{}, context:{}", channelId, context);
-            return false;
+//            return false;
+            ConnectMsg msgIn = convert(msg, context);
+            connectionManager.addConnectMsgInByConnectId(msgIn.getChannelIdStr(), msgIn);
         }
+
 
         return connectionManager.addHeatBeatMap(channelId, System.currentTimeMillis());
     }

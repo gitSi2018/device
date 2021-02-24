@@ -80,6 +80,12 @@ public class ConnectMsg extends BaseMsgIn {
      */
     private String channelIdStr;
 
+
+    /**
+     * 注册消息流水号
+     */
+    private Integer[] msgOrderNum;
+
     /**
      * 0 - 在线
      * 10 - 掉线

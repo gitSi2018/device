@@ -2,6 +2,7 @@ package com.hzs.device.api;
 
 import com.hzs.device.common.enums.MsgSendIDEnum;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
+import com.hzs.device.common.response.ErrorEnum;
 import com.hzs.device.common.response.Result;
 import com.hzs.device.infrature.tunnel.netty.MsgOutDeal;
 import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("device/location")
+@RequestMapping("device")
 public class QueryDeviceLocationController {
 
 
@@ -45,14 +46,14 @@ public class QueryDeviceLocationController {
     @Resource
     private MsgOutDeal msgOutDeal;
 
-    @GetMapping("query")
+    @GetMapping("location/query")
     public Integer sendQueryLocationMsg(@RequestParam("deviceId") String deviceId){
 
         deviceId = preDealDeviceId(deviceId);
         return msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.QUERY_LOCATION, new Integer[0]);
     }
 
-    @GetMapping("query/device")
+    @GetMapping("location/query/device")
     public Result<List<ConnectMsg>> queryDevice(@RequestParam(name = "deviceId", required = false) String deviceId){
 
         deviceId = preDealDeviceId(deviceId);
@@ -77,7 +78,7 @@ public class QueryDeviceLocationController {
         return Result.succeed(Collections.singletonList(connectMsg));
     }
 
-    @GetMapping("temp/control")
+    @GetMapping("location/temp/control")
     public Integer tempLocationControl(@RequestParam("timeInterval") Integer timeInterval,
                                       @RequestParam("validTime") Integer validTime,
                                       @RequestParam("deviceId") String deviceId){
@@ -113,6 +114,28 @@ public class QueryDeviceLocationController {
         Integer result = msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.TEMP_LOCATION_CONTROL, data);
 
         return result;
+    }
+
+    @GetMapping("control")
+    public Result  deviceControl(
+            @RequestParam("deviceId") String deviceId,
+            @RequestParam("order") Integer order){
+
+        // order 3 - 12
+        // 3-关机 4-复位 5-恢复出厂设置 6-关闭数据通信 7-关闭所有无线通信 10-关机（实际是关闭gprs数据通信和GPS）
+        // 11-重置3年超长待机设备电量（重置开机次数) 12 找寻终端设备，设备收到指令后播放一段音乐 13-查询设备外电电压、电流
+        if (order < 3 || order > 12 || order == 8 || order == 9){
+
+            log.warn("deviceControl  invalid order, deviceId:{}, order:{}", deviceId, order);
+            return Result.failed(ErrorEnum.INVALID_ORDER);
+        }
+        deviceId = preDealDeviceId(deviceId);
+        Integer result = msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.DEVICE_CONTROL, order);
+        log.info("deviceControl deviceId:{}, order:{}, result:{}", deviceId, order, result);
+        if (result == 0){
+            return Result.succeed();
+        }
+        return Result.failed(result);
     }
 
 

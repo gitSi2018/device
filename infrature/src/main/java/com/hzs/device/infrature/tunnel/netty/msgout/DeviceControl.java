@@ -10,24 +10,26 @@ import java.util.List;
 
 /**
  * @author: HongZhenSi
- * @date: 2021/2/23
+ * @date: 2021/2/24
  * @modifiedBy:
  * @description:
  * @version: 1.0
  */
 @Slf4j
 @Component
-public class ConnectResponse extends MsgOutServiceAbstract{
+public class DeviceControl extends MsgOutServiceAbstract{
 
 
     @Override
     public String point() {
-        return MsgSendIDEnum.CONNECTION_RESPONSE.getMsgKey();
+
+        return MsgSendIDEnum.DEVICE_CONTROL.getMsgKey();
     }
 
     @Override
     public List<Integer> getMsgId() {
-        return MsgSendIDEnum.CONNECTION_RESPONSE.getMsgId();
+
+        return MsgSendIDEnum.DEVICE_CONTROL.getMsgId();
     }
 
     @Override
@@ -35,16 +37,13 @@ public class ConnectResponse extends MsgOutServiceAbstract{
 
         List<Integer> msgSend = new ArrayList<>();
         //id
-        msgSend.addAll(MsgSendIDEnum.CONNECTION_RESPONSE.getMsgId());
+        msgSend.addAll(MsgSendIDEnum.DEVICE_CONTROL.getMsgId());
         //消息属性
-        msgSend.addAll(Arrays.asList(0x00, sendData.length));
+        msgSend.addAll(Arrays.asList(0x00, 0x00));
         //手机号
         msgSend.addAll(phoneToArrays(deviceId));
         //消息流水号
-        msgSend.addAll(getMsgNum(MsgSendIDEnum.CONNECTION_RESPONSE));
-
-        //消息内容
-        msgSend.addAll(Arrays.asList(sendData));
+        msgSend.addAll(getMsgNum(MsgSendIDEnum.DEVICE_CONTROL));
 
         return generateLastMsg(msgSend);
     }

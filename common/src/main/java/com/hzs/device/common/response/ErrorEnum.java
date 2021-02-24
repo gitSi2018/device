@@ -19,6 +19,8 @@ public enum ErrorEnum {
     NO_DEVICE_FOUND(1002, "找不到连接的设备"),
 
     SEND_MSG_TO_DEVICE_FAILED(1003, "给设备发送信息失败"),
+
+    INVALID_ORDER(1004, "无效的命令"),
     ;
     private final int code;
 

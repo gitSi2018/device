@@ -57,7 +57,7 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        log.info("ctx:{}, msg:{}", ctx, msg);
+        log.info("channelRead ctx:{}, msg:{}", ctx, msg);
         ByteBuf in = (ByteBuf) msg;
         final List<Integer> code = new ArrayList<>(10);
 
