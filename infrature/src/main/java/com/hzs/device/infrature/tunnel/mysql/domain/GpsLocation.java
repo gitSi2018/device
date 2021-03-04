@@ -33,23 +33,8 @@ public class GpsLocation {
     @Column(name = "lng_big_dec")
     private BigDecimal lngBigDec;
 
-    /**
-     * 海拔高度 单位m
-     */
-//    @Column(name = "high")
-//    private Integer high;
-
-    /**
-     * 速度 单位 0.1 /km*h
-     */
-//    @Column(name = "speed")
-//    private Integer speed;
-
-    /**
-     * 0-359,正北为0，顺时针
-     */
-//    @Column(name = "direct")
-//    private Integer direct;
+    @Column(name = "gps_date_time")
+    private Date gpsDateTime;
 
 
     /**

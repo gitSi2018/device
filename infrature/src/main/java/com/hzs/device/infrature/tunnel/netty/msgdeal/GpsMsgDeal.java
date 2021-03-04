@@ -57,7 +57,7 @@ public class GpsMsgDeal extends ConnectMsgDeal{
             return false;
         }
         List<Integer> data = msg.subList(21, msg.size() - 2);
-        gpsLocationManager.store(generateLocationMsg(data, connectMsg.getDeviceId()));
+        gpsLocationManager.storeIfAbsent(generateLocationMsg(data, connectMsg.getDeviceId()));
         return true;
     }
 
@@ -75,12 +75,8 @@ public class GpsMsgDeal extends ConnectMsgDeal{
         locationMsg.setLatBigDec(new BigDecimal(lat).divide(DIVIDE, 6, RoundingMode.HALF_UP));
         locationMsg.setLngBigDec(new BigDecimal(lng).divide(DIVIDE, 6, RoundingMode.HALF_UP));
 
-        locationMsg.setHigh((int)DigitalConvertUtils.convert(10, msg.get(8), msg.get(9)));
-        locationMsg.setSpeed((int)DigitalConvertUtils.convert(10, msg.get(10), msg.get(11)));
-
-        locationMsg.setDirect((int)DigitalConvertUtils.convert(10, msg.get(12), msg.get(13)));
-
         locationMsg.setGpsTime(generateTime(msg));
+        locationMsg.setGpsDateTime(new Date(locationMsg.getGpsTime()));
         return locationMsg;
 
     }

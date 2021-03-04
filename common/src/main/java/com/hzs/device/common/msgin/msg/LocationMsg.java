@@ -27,22 +27,10 @@ public class LocationMsg extends BaseMsgIn {
 
     private BigDecimal lngBigDec;
 
-    /**
-     * 海拔高度 单位m
-     */
-    private Integer high;
-
-    /**
-     * 速度 单位 0.1 /km*h
-     */
-    private Integer speed;
-
-    /**
-     * 0-359,正北为0，顺时针
-     */
-    private Integer direct;
 
     private Long gpsTime;
+
+    private Date gpsDateTime;
 
     private Date created;
 

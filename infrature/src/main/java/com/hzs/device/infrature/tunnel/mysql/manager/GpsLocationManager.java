@@ -28,10 +28,14 @@ public class GpsLocationManager {
     private GpsLocationMapper gpsLocationMapper;
 
 
-    public boolean store(LocationMsg locationMsg){
+    public boolean storeIfAbsent(LocationMsg locationMsg){
 
 
         log.info("GpsLocationManager store locationMsg:{}", locationMsg);
+        if (null != gpsLocationMapper.getExistRecordId(locationMsg.getDeviceId(), locationMsg.getGpsTime())){
+            log.warn("GpsLocationManager store, record has exist");
+            return true;
+        }
         GpsLocation gpsLocation = convert(locationMsg);
 
         Date now = new Date();
@@ -56,7 +60,7 @@ public class GpsLocationManager {
             return false;
         }
         for (LocationMsg locationMsg : locationMsgs){
-            store(locationMsg);
+            storeIfAbsent(locationMsg);
         }
         return true;
     }

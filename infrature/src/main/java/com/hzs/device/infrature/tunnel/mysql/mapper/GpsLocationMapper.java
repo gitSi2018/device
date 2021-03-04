@@ -1,6 +1,8 @@
 package com.hzs.device.infrature.tunnel.mysql.mapper;
 
 import com.hzs.device.infrature.tunnel.mysql.domain.GpsLocation;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
 /**
@@ -12,4 +14,7 @@ import tk.mybatis.mapper.common.Mapper;
  */
 public interface GpsLocationMapper extends Mapper<GpsLocation> {
 
+
+    @Select("select id from hz_gps_location where device_id = #{deviceId} and gps_time = #{gpsTime}")
+    Long getExistRecordId(@Param("deviceId") String deviceId, @Param("gpsTime") Long gpsTime);
 }
