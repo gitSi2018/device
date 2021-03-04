@@ -32,6 +32,7 @@ public enum MsgSendIDEnum {
 
     SLEEP_RESPONSE(Arrays.asList(0x81, 0x25), "SLEEP_RESPONSE"),
 
+    UN_SLEEP_RESPONSE(Arrays.asList(0x81, 0x08), "UN_SLEEP_RESPONSE"),
 
     ;
 

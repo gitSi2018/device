@@ -3,7 +3,6 @@ package com.hzs.device.infrature.tunnel.netty.msgdeal;
 import com.hzs.device.common.msgin.BaseMsgIn;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
 import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
-import com.hzs.device.infrature.tunnel.netty.msgout.UnSleepOut;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,21 +17,17 @@ import java.util.List;
  * @description:
  * @version: 1.0
  */
-
 @Slf4j
 @Component
-public class UnSleepMsgDeal extends ConnectMsgDeal{
+public class SavePowerMsgDeal extends ConnectMsgDeal{
 
-
-//    @Resource
-//    private CommonResponse commonResponse;
 
     @Resource
-    private UnSleepOut unSleepOut;
+    private CommonResponse commonResponse;
 
     @Override
     public String getPoint() {
-        return "0108";
+        return "0112";
     }
 
     @Override
@@ -43,10 +38,11 @@ public class UnSleepMsgDeal extends ConnectMsgDeal{
     @Override
     public boolean execute(List<Integer> msg, ChannelHandlerContext context) {
 
-        log.info("ResetMsgDeal execute, msg:{}, context:{}", msg, context);
-
+        log.info("SavePowerMsgDeal execute, msg:{}", msg);
         ConnectMsg connectMsg = convert(msg, context);
-        sendToDevice(unSleepOut.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), null)
+
+
+        sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x01, 0x12, 0)
                 , connectMsg.getChannel());
         return true;
     }
