@@ -28,7 +28,7 @@ public class ConnectionCheckTask {
     @Resource
     private ConnectionManager connectionManager;
 
-//    @Scheduled(fixedDelay = 30000L)
+    @Scheduled(fixedDelay = 30000L)
     public void statusPrint(){
 
         try {
@@ -126,6 +126,6 @@ public class ConnectionCheckTask {
             return true;
         }
         Long lastHeatBeatTime = deviceIdHeartbeatTime.getTime();
-        return lastHeatBeatTime == null || System.currentTimeMillis() - lastHeatBeatTime > 600 * 1000;
+        return lastHeatBeatTime == null || System.currentTimeMillis() - lastHeatBeatTime > 900 * 1000;
     }
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
+<!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
+<!--参考资料：https://www.cnblogs.com/leecong/p/5776970.html-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property resource="application.properties"/>
+    <!--定义参数,后面可以通过${APP_NAME}使用-->
+    <property name="LOG_PATH" value="./logs"/>
+    <property name="LOG_FILE" value="${LOG_PATH}/application.log"/>
+
+    <!-- 日志格式 -->
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%L] - %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="APPLICATION"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--定义日志输出的路径-->
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/application-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>500MB</maxFileSize>
+            <totalSizeCap>8GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ASYNC_APPLICATION" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <appender-ref ref="APPLICATION"/>
+        <includeCallerData>true</includeCallerData> <!-- Copy caller data toListExecutionOrderRequest event -->
+    </appender>
+
+
+<!--    <appender name="INFO_APPENDER"-->
+<!--              class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <file>${LOG_PATH}/info.log</file>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${LOG_PATH}/info.%d{yyyy-MM-dd}-%i.log</fileNamePattern>-->
+<!--            <maxHistory>3</maxHistory>-->
+<!--            <timeBasedFileNamingAndTriggeringPolicy-->
+<!--                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+<!--                <MaxFileSize>100MB</MaxFileSize>-->
+<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+<!--            <totalSizeCap>300MB</totalSizeCap>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder>-->
+<!--            <pattern>${LOG_PATTERN}</pattern>-->
+<!--        </encoder>-->
+<!--        &lt;!&ndash;        <filter class="ch.qos.logback.classic.filter.LevelFilter">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <level>info</level>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <onMatch>ACCEPT</onMatch>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <onMismatch>NEUTRAL</onMismatch>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </filter>&ndash;&gt;-->
+<!--    </appender>-->
+
+<!--    <appender name="ASYNC_INFO_APPENDER" class="ch.qos.logback.classic.AsyncAppender">-->
+<!--        <discardingThreshold>0</discardingThreshold>-->
+<!--        <queueSize>256</queueSize>-->
+<!--        <appender-ref ref="INFO_APPENDER"/>-->
+<!--        <includeCallerData>true</includeCallerData> &lt;!&ndash; Copy caller data toListExecutionOrderRequest event &ndash;&gt;-->
+<!--    </appender>-->
+
+
+    <!-- 时间滚动输出 level为 ERROR 日志 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/error.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/error-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文件保留天数-->
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <!-- 此日志文件只记录ERROR级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>256</queueSize>
+        <appender-ref ref="ERROR_FILE"/>
+        <includeCallerData>true</includeCallerData> <!-- Copy caller data toListExecutionOrderRequest event -->
+    </appender>
+
+
+
+    <root level="info">
+        <appender-ref ref="ASYNC_APPLICATION"/>
+        <appender-ref ref="ASYNC_ERROR_FILE"/>
+
+    </root>
+
+    <!--OTA operate-->
+<!--    <logger name="ota-operate" level="info" additivity="false">-->
+<!--        <appender-ref ref="ASYNC_APPENDER_OTA_OPERATE"/>-->
+<!--    </logger>-->
+
+
+
+
+</configuration>
