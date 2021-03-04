@@ -55,6 +55,8 @@ public class DeviceOfflineMsgDeal extends MsgDealServiceAbstract{
 
             log.warn("HeatBeatDeal execute, channelId:{}, context:{}", channelId, context);
         }else {
+
+            connectionManager.dealOffline(channelId, true);
             msgOutDeal.sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x03, 0)
                     , connectMsg.getChannel());
         }

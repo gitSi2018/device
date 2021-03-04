@@ -5,6 +5,7 @@ import com.hzs.device.common.msgin.msg.ConnectMsg;
 import com.hzs.device.common.msgin.msg.LocationMsg;
 import com.hzs.device.infrature.common.utils.DigitalConvertUtils;
 import com.hzs.device.infrature.tunnel.mysql.manager.GpsLocationManager;
+import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
     @Resource
     private GpsLocationManager gpsLocationManager;
 
+    @Resource
+    private CommonResponse commonResponse;
+
     @Override
     public String getPoint() {
 
@@ -53,6 +57,9 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
         }
         List<LocationMsg> locationMsgs = generate(msg, connectMsg.getDeviceId());
         gpsLocationManager.batchInsert(locationMsgs);
+
+        sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x07, 0x04, 0)
+                , connectMsg.getChannel());
         return false;
     }
 

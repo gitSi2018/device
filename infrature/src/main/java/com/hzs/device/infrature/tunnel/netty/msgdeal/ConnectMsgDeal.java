@@ -80,11 +80,7 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
         msgIn.setDeviceId(generateDeviceId(msg));
 
         msgIn.setMsgOrderNum(connectOrderNum(msg));
-        // 车牌号
-        msgIn.setDeviceNo("");
 
-        msgIn.setDeviceType("");
-        msgIn.setColor("");
         return msgIn;
     }
 
