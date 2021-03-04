@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
     public boolean execute(List<Integer> msg, ChannelHandlerContext context) {
 
 
-        ConnectMsg connectMsg = getConnectMsg(context);
+        ConnectMsg connectMsg = convert(msg, context);
         if (connectMsg == null || StringUtils.isEmpty(connectMsg.getDeviceId())){
 
             log.warn("GpsMsgDeal cannot get device by connect id. msg:{}", msg);
@@ -55,11 +56,11 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
         return false;
     }
 
-    private List<LocationMsg> generate(List<Integer> msg, String deviceId){
+    private static List<LocationMsg> generate(List<Integer> msg, String deviceId){
 
         List<Integer> temp = msg.subList(13, msg.size() - 2);
-        int gpsCount = (int) DigitalConvertUtils.convert(temp.get(0), temp.get(1), 16);
-        int type = Integer.valueOf(temp.get(2) + "", 16);
+        int gpsCount = (int) DigitalConvertUtils.convert(10, temp.get(0), temp.get(1));
+        int type = Integer.valueOf(temp.get(2) + "", 10);
         log.info("BatchGpsMsgDeal generate, gpsCount:{}, type:{}, temp:{}, ", gpsCount, type, temp);
 
         if (gpsCount == 0){
@@ -70,8 +71,8 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
 
         List<LocationMsg> locationMsgs = new ArrayList<>(gpsCount);
         for (int i = 0; i < gpsCount; i++){
-            int dataSize = (int) DigitalConvertUtils.convert(temp.get(0), temp.get(1), 16);
-            List<Integer> data = temp.subList(2, dataSize + 2);
+            int dataSize = (int) DigitalConvertUtils.convert(10, temp.get(0), temp.get(1));
+            List<Integer> data = temp.subList(2 + 8, dataSize + 2);
             temp = temp.subList(dataSize + 2, temp.size());
             log.info("dataSize:{}, \ndata:{}, \ntemp:{}", dataSize, data, temp);
             LocationMsg locationMsg =
@@ -81,5 +82,22 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
         return locationMsgs;
     }
 
+
+    public static void main(String[] args) {
+
+        List<Integer> msg = Arrays.asList(126,
+                7,4,  0,151,
+                7,3,80,0,66,130,  0, 52,
+                0, 2,
+                1,
+                0,72,
+                0,0,0,0, 0,12,0,0,  1,211,140,113,  6,205,144,61, 0,0,0,0,0,0,33,3,3,20,86,40,1,4,0,0,0,0,48,1,31,49,1,10,228,2,1,16,229,1,1,230,1,0,231,8,0,0,0,0,0,0,0,0,238,10,1,204,8,112,33,6,179,236,2,
+                0,0, 72,
+                0,0,0,0,0,12,0,0,1,211,140,113,6,205,144,61,0,0,0,0,0,0,33,3,3,21,22,88,1,4,0,0,0,0,48,1,31,49,1,10,228,2,0,24,229,1,1,230,1,0,231,8,0,0,0,0,0,0,0,0,238,10,1,204,8,112,33,6,179,236,2,0,
+                15,126);
+
+        List<LocationMsg> msgs = generate(msg, "test1");
+        log.info("msgs:{}", msgs);
+    }
 
 }

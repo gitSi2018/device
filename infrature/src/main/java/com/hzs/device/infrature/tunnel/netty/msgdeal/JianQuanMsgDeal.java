@@ -56,7 +56,7 @@ public class JianQuanMsgDeal extends ConnectMsgDeal{
             connectionManager.addConnectMsgInByConnectId(connectMsg.getChannelIdStr(), connectMsg);
         }
 
-        sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x02, 0)
+        sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x01, 0x02, 0)
                 , connectMsg.getChannel());
 
         return connectionManager.addHeatBeatMap(channelId, new DeviceIdHeartbeatTime(connectMsg.getDeviceId(), System.currentTimeMillis()));

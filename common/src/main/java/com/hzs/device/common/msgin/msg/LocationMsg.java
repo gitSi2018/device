@@ -21,9 +21,7 @@ public class LocationMsg extends BaseMsgIn {
 
     private String deviceId;
 
-//    private Integer lat;
-//
-//    private Integer lng;
+
 
     private BigDecimal latBigDec;
 
