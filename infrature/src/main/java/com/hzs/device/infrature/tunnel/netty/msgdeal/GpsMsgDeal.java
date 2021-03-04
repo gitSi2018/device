@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class GpsMsgDeal extends MsgDealServiceAbstract{
+public class GpsMsgDeal extends ConnectMsgDeal{
 
 
     @Resource
@@ -50,7 +50,7 @@ public class GpsMsgDeal extends MsgDealServiceAbstract{
 
         log.info("GpsMsgDeal, msg:{}, context:{}", msg, context);
 
-        ConnectMsg connectMsg = getConnectMsg(context);
+        ConnectMsg connectMsg = convert(msg, context);
         if (connectMsg == null || StringUtils.isEmpty(connectMsg.getDeviceId())){
 
             log.warn("GpsMsgDeal cannot get device by connect id. msg:{}", msg);

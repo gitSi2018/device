@@ -23,7 +23,7 @@ public class MsgNumberManager {
         Integer[] msgNum = new Integer[2];
         int num = (int)(System.currentTimeMillis() & Integer.valueOf("1111111111111111", 2));
         msgNum[1] = (num & Integer.valueOf("11111111", 2));
-        msgNum[0] =(num >> 8);
+        msgNum[0] = msgSendIDEnum.getMsgId().get(0) + msgSendIDEnum.getMsgId().get(1);
         log.info("MsgNumberManager msgSendIDEnum:{}, msgNum:{}", msgSendIDEnum, msgNum);
         return Arrays.asList(msgNum);
     }

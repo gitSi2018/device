@@ -75,4 +75,5 @@ public abstract class MsgOutServiceAbstract implements MsgOutServiceI{
                 msgSend, newMsgSend);
         return newMsgSend;
     }
+
 }

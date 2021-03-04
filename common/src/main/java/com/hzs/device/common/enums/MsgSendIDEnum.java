@@ -23,6 +23,16 @@ public enum MsgSendIDEnum {
     CONNECTION_RESPONSE(Arrays.asList(0x81, 0x00), "CONNECTION_RESPONSE"),
 
     DEVICE_CONTROL(Arrays.asList(0x81, 0x05), "DEVICE_CONTROL"),
+
+    COMMON_RESPONSE(Arrays.asList(0x80, 0x01), "COMMON_RESPONSE"),
+
+    QUERY_DEVICE(Arrays.asList(0x81, 0x04), "QUERY_DEVICE"),
+
+    SET_DEVICE_PARAMETER(Arrays.asList(0x81, 0x03), "SET_DEVICE_PARAMETER"),
+
+    SLEEP_RESPONSE(Arrays.asList(0x81, 0x25), "SLEEP_RESPONSE"),
+
+
     ;
 
 

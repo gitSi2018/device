@@ -8,32 +8,34 @@ import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
 import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author: HongZhenSi
- * @date: 2021/1/28
+ * @date: 2021/2/24
  * @modifiedBy:
  * @description:
  * @version: 1.0
  */
 @Slf4j
-@Service
-public class HeatBeatDeal extends ConnectMsgDeal{
+@Component
+public class JianQuanMsgDeal extends ConnectMsgDeal{
 
 
-    @Resource
-    private ConnectionManager connectionManager;
+
 
     @Resource
     private CommonResponse commonResponse;
 
+    @Resource
+    private ConnectionManager connectionManager;
+
     @Override
     public String getPoint() {
-        return "0002";
+        return "0102";
     }
 
     @Override
@@ -43,10 +45,9 @@ public class HeatBeatDeal extends ConnectMsgDeal{
 
     @Override
     public boolean execute(List<Integer> msg, ChannelHandlerContext context) {
-
-        log.info("heart beat, no msg need.");
+        log.info("JianQuanMsgDeal, no msg need.");
         String channelId = getChannelId(context);
-        ConnectMsg connectMsg = getConnectMsgInByConnectId(channelId);
+        ConnectMsg connectMsg = connectionManager.getConnectMsgInByConnectId(channelId);
         if (connectMsg == null){
 
             log.warn("HeatBeatDeal execute, channelId:{}, context:{}", channelId, context);
@@ -58,8 +59,7 @@ public class HeatBeatDeal extends ConnectMsgDeal{
         sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x02, 0)
                 , connectMsg.getChannel());
 
+        return connectionManager.addHeatBeatMap(channelId, new DeviceIdHeartbeatTime(connectMsg.getDeviceId(), System.currentTimeMillis()));
 
-        return connectionManager.addHeatBeatMap(channelId, new DeviceIdHeartbeatTime(connectMsg.getDeviceId(),  System.currentTimeMillis()));
     }
-
 }

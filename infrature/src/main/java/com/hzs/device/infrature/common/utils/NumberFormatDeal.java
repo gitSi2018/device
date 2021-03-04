@@ -2,6 +2,7 @@ package com.hzs.device.infrature.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class NumberFormatDeal {
         for (int i = 0; i < datas.size(); i++){
 
             int data =  datas.get(i);
-            String hex = Integer.toHexString(data & 0xFF);
+            String hex = Integer.toHexString(data & 0xFFFFF);
             if (hex.length() == 1) {
                 hex = '0' + hex;
             }
@@ -45,4 +46,5 @@ public class NumberFormatDeal {
         String string = String.format(Integer.toBinaryString(temp));
         return string;
     }
+
 }

@@ -139,6 +139,33 @@ public class QueryDeviceLocationController {
     }
 
 
+    @GetMapping("query")
+    public Result deviceQuery(@RequestParam("deviceId") String deviceId){
+
+        deviceId = preDealDeviceId(deviceId);
+        Integer result = msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.QUERY_DEVICE, null);
+        log.info("deviceQuery deviceId:{}, result:{}", deviceId, result);
+        if (result == 0){
+            return Result.succeed();
+        }
+        return Result.failed(result);
+    }
+
+    @GetMapping("set/parameter")
+    public Result setDeviceParameter(@RequestParam("deviceId") String deviceId){
+
+        deviceId = preDealDeviceId(deviceId);
+
+        Integer result = msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.SET_DEVICE_PARAMETER,
+                 0x01, 0x00, 0x00, 0xf1 , 0x21
+                , 0x03  , 0x01 , 0x00 , 0x00 );
+        log.info("setDeviceParameter deviceId:{}, result:{}", deviceId, result);
+        if (result == 0){
+            return Result.succeed();
+        }
+        return Result.failed(result);
+    }
+
     private static String preDealDeviceId(String deviceId){
 
         if (StringUtils.isEmpty(deviceId)){

@@ -1,9 +1,13 @@
 package com.hzs.device.infrature.tunnel.netty.msgdeal;
 
+import com.hzs.device.common.constant.ResultCodeConstant;
 import com.hzs.device.common.msgin.BaseMsgIn;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
 import com.hzs.device.infrature.tunnel.netty.MsgOutDeal;
+import com.hzs.device.infrature.tunnel.netty.NettySentMsgToDevice;
+import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
 import com.hzs.device.infrature.tunnel.netty.msgout.ConnectResponse;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +30,15 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
 
 
 
-
     @Resource
     private ConnectResponse connectResponse;
 
     @Resource
     private MsgOutDeal msgOutDeal;
+
+
+    @Resource
+    private ConnectionManager connectionManager;
 
     @Override
     public String getPoint() {
@@ -84,10 +91,39 @@ public class ConnectMsgDeal extends MsgDealServiceAbstract{
     private Integer[] connectOrderNum(List<Integer> msg){
 
         Integer[] orderNum = new Integer[2];
-        orderNum[0] = msg.get(12);
-        orderNum[1] = msg.get(13);
+        orderNum[0] = msg.get(11);
+        orderNum[1] = msg.get(12);
         return orderNum;
     }
+
+    public ConnectMsg getConnectMsgInByConnectId(String connectId){
+
+        return connectionManager.getConnectMsgInByConnectId(connectId);
+    }
+
+
+    public int sendToDevice(List<Integer> newMsgSend, Channel channel){
+
+        // 拼接头尾 求校验和
+
+//        List<Integer> newMsgSend = new ArrayList<>(msgSend.size() + 3);
+//        newMsgSend.add(126);
+//        newMsgSend.addAll(msgSend);
+//        int checkSum = calculateCheckSum(msgSend);
+//        newMsgSend.addAll(Arrays.asList(checkSum, 126));
+
+        //转成byte的数组
+        byte[] msg = new byte[newMsgSend.size()];
+        for (int i = 0; i < newMsgSend.size(); i++){
+            msg[i] = newMsgSend.get(i).byteValue();
+        }
+
+        log.info("MsgOutDeal sendToDevice, msg:{}\nchannel:{}",
+                msg, channel);
+        return NettySentMsgToDevice.sentToClient(channel, msg) ?
+                ResultCodeConstant.SEND_ORDER_SUCCEED : ResultCodeConstant.CHANNEL_IS_INACTIVE;
+    }
+
 
     //
     private String generateDeviceId(List<Integer> msg){

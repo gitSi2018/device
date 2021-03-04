@@ -4,11 +4,13 @@ import com.hzs.device.common.msgin.BaseMsgIn;
 import com.hzs.device.common.msgin.msg.CommonResponseMsg;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
 import com.hzs.device.infrature.common.utils.NumberFormatDeal;
+import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +23,11 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class CommonResponseMsgDeal extends MsgDealServiceAbstract{
+public class CommonResponseMsgDeal extends ConnectMsgDeal{
 
+
+    @Resource
+    private CommonResponse commonResponse;
 
     @Override
     public String getPoint() {
@@ -43,6 +48,10 @@ public class CommonResponseMsgDeal extends MsgDealServiceAbstract{
 
             log.warn("CommonResponseMsgDeal cannot get device by connect id. msg:{}", msg);
 //            return false;
+        }else {
+
+            sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x01, 0)
+                    , connectMsg.getChannel());
         }
         CommonResponseMsg responseMsg = convert(msg);
 

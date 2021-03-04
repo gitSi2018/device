@@ -1,6 +1,7 @@
 package com.hzs.device.infrature.tunnel.netty.manage;
 
 import com.hzs.device.common.msgin.msg.ConnectMsg;
+import com.hzs.device.infrature.tunnel.mysql.domain.DeviceIdHeartbeatTime;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class ConnectionManager {
     private static final Map<String, ConnectMsg> deviceIdMap = new ConcurrentHashMap<>();
     private static final Map<String, String> connMap = new ConcurrentHashMap<>();
 
-    private static final Map<String, Long> heatBeatMap = new ConcurrentHashMap<>();
+    private static final Map<String, DeviceIdHeartbeatTime> heatBeatMap = new ConcurrentHashMap<>();
 
     public Map<String, ConnectMsg> getDeviceIdMap(){
 
@@ -36,13 +37,13 @@ public class ConnectionManager {
         return connMap;
     }
 
-    public Map<String, Long> getHeatBeatMap(){
+    public Map<String, DeviceIdHeartbeatTime> getHeatBeatMap(){
 
         return heatBeatMap;
     }
 
 
-    public void dealOffline(String connectId){
+    public void dealOffline(String connectId, boolean deviceOffline){
 
         if (StringUtils.isEmpty(connectId)){
 
@@ -54,7 +55,7 @@ public class ConnectionManager {
             log.warn("ConnectionManager dealOffline connectMsg is null. connectId:{}", connectId);
             return;
         }
-        if (!StringUtils.isEmpty(connectMsg.getDeviceId())) {
+        if (!StringUtils.isEmpty(connectMsg.getDeviceId()) && deviceOffline) {
             deviceIdMap.remove(connectMsg.getDeviceId());
         }
         SocketChannel channel = connectMsg.getChannel();
@@ -100,14 +101,14 @@ public class ConnectionManager {
 
         log.info("ConnectionManager addConnectMsgInByConnectId connectId:{}, msgIn:{}", connectId,msgIn );
         deviceIdMap.put(msgIn.getDeviceId(), msgIn);
-        addHeatBeatMap(connectId, System.currentTimeMillis());
+        addHeatBeatMap(connectId, new DeviceIdHeartbeatTime(msgIn.getDeviceId(), System.currentTimeMillis()));
         return connMap.put(connectId, msgIn.getDeviceId());
     }
 
-    public boolean addHeatBeatMap(String connectId, Long beatTime){
+    public boolean addHeatBeatMap(String connectId, DeviceIdHeartbeatTime deviceIdHeartbeatTime){
 
-        log.info("ConnectionManager addHeatBeatMap, connectId:{}, beatTime:{}", connectId, beatTime);
-        heatBeatMap.put(connectId, beatTime);
+        log.info("ConnectionManager addHeatBeatMap, connectId:{}, deviceIdHeartbeatTime:{}", connectId, deviceIdHeartbeatTime);
+        heatBeatMap.put(connectId, deviceIdHeartbeatTime);
         return true;
     }
 

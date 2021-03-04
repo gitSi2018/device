@@ -3,6 +3,7 @@ package com.hzs.device.infrature.tunnel.netty;
 import com.alibaba.fastjson.JSON;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.hzs.device.common.utils.SpringBeanUtils;
+import com.hzs.device.infrature.common.utils.NumberFormatDeal;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -10,6 +11,7 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -53,11 +55,21 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
     }
 
 
+    private void printToSixteen(List<Integer> data){
+
+        try {
+            log.info("receive data sixteen string:{}", Arrays.asList(NumberFormatDeal.sixteenFormat(data)));
+        }catch (Exception e){
+
+            log.error("printToSixteen error. data:{}", data, e);
+        }
+    }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
 
         log.info("channelRead ctx:{}, msg:{}", ctx, msg);
+
         ByteBuf in = (ByteBuf) msg;
         final List<Integer> code = new ArrayList<>(10);
 
@@ -94,6 +106,7 @@ public class MsgInTunnelHandler extends ChannelInboundHandlerAdapter {
         } finally {
             ReferenceCountUtil.release(msg); // (2)
             log.info("\nreceive code:{}", JSON.toJSON(code));
+            printToSixteen(code);
         }
 
     }

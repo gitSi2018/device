@@ -29,7 +29,9 @@ public class LocationQuery extends MsgOutServiceAbstract{
 
     public static void main(String[] args) {
 
-        List<Integer> msg = Arrays.asList(0X82,0X01,  0X00,0X08,  0X99,0X99,0X99,0X99,0X91,0X18, 0X00, 0X0c);
+//        List<Integer> msg = Arrays.asList(0X82,0X01,  0X00,0X08,  0X99,0X99,0X99,0X99,0X91,0X18, 0X00, 0X0c);
+
+        List<Integer> msg  = Arrays.asList(0, 3, 0, 0, 7, 3, 80, 0, 66, 130, 0, 3);  // 148, 126
         int sum = calculateCheckSum(msg);
         log.info("sum:{}, sumTest:{}", sum, Integer.valueOf("0e", 16));
 

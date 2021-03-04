@@ -1,39 +1,43 @@
 package com.hzs.device.infrature.tunnel.netty.msgdeal;
 
 import com.hzs.device.common.msgin.BaseMsgIn;
+import com.hzs.device.common.msgin.msg.CommonResponseMsg;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
-import com.hzs.device.infrature.tunnel.mysql.domain.DeviceIdHeartbeatTime;
 import com.hzs.device.infrature.tunnel.netty.MsgOutDeal;
 import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
 import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * @author: HongZhenSi
- * @date: 2021/1/28
+ * @date: 2021/2/24
  * @modifiedBy:
  * @description:
  * @version: 1.0
  */
 @Slf4j
-@Service
-public class HeatBeatDeal extends ConnectMsgDeal{
+@Component
+public class DeviceOfflineMsgDeal extends MsgDealServiceAbstract{
 
 
     @Resource
     private ConnectionManager connectionManager;
 
     @Resource
+    private MsgOutDeal msgOutDeal;
+
+    @Resource
     private CommonResponse commonResponse;
+
 
     @Override
     public String getPoint() {
-        return "0002";
+        return "0003";
     }
 
     @Override
@@ -44,22 +48,19 @@ public class HeatBeatDeal extends ConnectMsgDeal{
     @Override
     public boolean execute(List<Integer> msg, ChannelHandlerContext context) {
 
-        log.info("heart beat, no msg need.");
+        log.info("DeviceOfflineMsgDeal execute, msg:{}", msg);
         String channelId = getChannelId(context);
-        ConnectMsg connectMsg = getConnectMsgInByConnectId(channelId);
+        ConnectMsg connectMsg = connectionManager.getConnectMsgInByConnectId(channelId);
         if (connectMsg == null){
 
             log.warn("HeatBeatDeal execute, channelId:{}, context:{}", channelId, context);
-//            return false;
-            connectMsg = convert(msg, context);
-            connectionManager.addConnectMsgInByConnectId(connectMsg.getChannelIdStr(), connectMsg);
+        }else {
+            msgOutDeal.sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x03, 0)
+                    , connectMsg.getChannel());
         }
-
-        sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x00, 0x02, 0)
-                , connectMsg.getChannel());
+        log.info("DeviceOfflineMsgDeal connectMsg:{}", connectMsg);
 
 
-        return connectionManager.addHeatBeatMap(channelId, new DeviceIdHeartbeatTime(connectMsg.getDeviceId(),  System.currentTimeMillis()));
+        return false;
     }
-
 }
