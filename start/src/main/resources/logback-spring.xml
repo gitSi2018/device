@@ -115,12 +115,5 @@
 
     </root>
 
-    <!--OTA operate-->
-<!--    <logger name="ota-operate" level="info" additivity="false">-->
-<!--        <appender-ref ref="ASYNC_APPENDER_OTA_OPERATE"/>-->
-<!--    </logger>-->
-
-
-
 
 </configuration>

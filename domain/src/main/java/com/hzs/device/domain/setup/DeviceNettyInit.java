@@ -38,8 +38,6 @@ public class DeviceNettyInit {
         deviceNettyInit = this;
     }
 
-//    @Resource
-//    private MsgInTunnelHandler msgInTunnelHandler;
 
     private static final Executor executor = new ThreadPoolExecutor(
             1,
@@ -96,11 +94,6 @@ public class DeviceNettyInit {
     }
 
 
-//    @Override
-//    public void start() {
-//
-//        start(8080);
-//    }
 
     public void stop() {
         if (channel != null) {
@@ -109,37 +102,4 @@ public class DeviceNettyInit {
             bossGroup.shutdownGracefully();
         }
     }
-
-//    @Override
-//    public boolean isRunning() {
-//        return false;
-//    }
-//
-//    @Override
-//    public int getPhase() {
-//        return 2147483647;
-//    }
-
-    //    //  注意这里，组件启动时会执行run，这个注解是让线程异步执行，这样不影响主线程
-//    public void init(final int port) {
-//        executor.execute(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        start(port);
-//                    }
-//                }
-//        );
-//    }
-//
-//    public void init() {
-//        executor.execute(
-//                new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        start(DEFAULT_PORT);
-//                    }
-//                }
-//        );
-//    }
 }

@@ -28,47 +28,9 @@ public class ConnectionCheckTask {
     @Resource
     private ConnectionManager connectionManager;
 
-    @Scheduled(fixedDelay = 30000L)
-    public void statusPrint(){
-
-        try {
-
-            log.info("into ConnectionCheckTask statusPrint.");
-            Map<String, String> connMap = connectionManager.getConnMap();
-            Map<String, ConnectMsg> deviceIdMap = connectionManager.getDeviceIdMap();
-
-            Map<String, DeviceIdHeartbeatTime> heatBeatMap = connectionManager.getHeatBeatMap();
-//        connMap.forEach((k, v) -> log.info("key:{}, value:{}", k, v));
-            if (CollectionUtils.isEmpty(connMap.keySet())){
-                log.info("connMap is empty");
-            }
-            for (String key : connMap.keySet()) {
-                log.info("connMap key:{}, value:{}", key, connMap.get(key));
-            }
-
-
-            if (CollectionUtils.isEmpty(deviceIdMap.keySet())){
-                log.info("deviceIdMap is empty");
-            }
-            for (String key : deviceIdMap.keySet()) {
-                log.info("deviceIdMap key:{}, value:{}", key, deviceIdMap.get(key));
-            }
-
-
-            if (CollectionUtils.isEmpty(heatBeatMap.keySet())){
-                log.info("heatBeatMap is empty");
-            }
-            for (String key : heatBeatMap.keySet()) {
-                log.info("heatBeatMap key:{}, value:{}", key, heatBeatMap.get(key));
-            }
-        }catch (Exception e){
-
-            log.error("ConnectionCheckTask statusPrint error.", e);
-        }
-    }
 
     @Scheduled(fixedDelay = 100000L)
-    public void checkDeadConnection(){
+    public void checkOfflineDevice(){
 
         try {
             Map<String, DeviceIdHeartbeatTime> heatBeatMap = connectionManager.getHeatBeatMap();
