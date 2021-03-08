@@ -28,7 +28,7 @@ public enum MsgSendIDEnum {
 
     QUERY_DEVICE(Arrays.asList(0x81, 0x04), "QUERY_DEVICE"),
 
-    SET_DEVICE_PARAMETER(Arrays.asList(0x81, 0x03), "SET_DEVICE_PARAMETER"),
+    SET_DEVICE_PARAMETER(Arrays.asList(0x81, 0x03),"SET_DEVICE_PARAMETER"),
 
     SLEEP_RESPONSE(Arrays.asList(0x81, 0x25), "SLEEP_RESPONSE"),
 

@@ -22,6 +22,12 @@ public class LocationMsg extends BaseMsgIn {
     private String deviceId;
 
 
+    private boolean vibrationAlarm;
+
+    /**
+     * 电量百分比
+     */
+    private Integer powerPercent;
 
     private BigDecimal latBigDec;
 

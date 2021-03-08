@@ -31,6 +31,21 @@ public class NumberFormatDeal {
         return msgs;
     }
 
+    public static void printToSixteenFormat(List<Integer> datas){
+
+        StringBuilder msgs = new StringBuilder();
+        for (int i = 0; i < datas.size(); i++){
+
+            int data =  datas.get(i);
+            String hex = Integer.toHexString(data & 0xFFFFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+            msgs.append(hex).append(" ");
+        }
+        log.info("printToSixteenFormat sixteenFormat msgs:{}", msgs);
+    }
+
     public static String[] toBinaryString(List<Integer> datas, int radix){
 
         String[] strings = new String[datas.size()];

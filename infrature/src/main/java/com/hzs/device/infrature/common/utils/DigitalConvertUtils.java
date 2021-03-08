@@ -29,6 +29,8 @@ public class DigitalConvertUtils {
         return Long.parseLong(temp.toString(), 2);
     }
 
+
+
     public static void main(String[] args) {
 
 

@@ -9,6 +9,7 @@ import com.hzs.device.infrature.tunnel.netty.msgout.CommonResponse;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -60,7 +61,7 @@ public class GpsMsgDeal extends ConnectMsgDeal{
             log.warn("GpsMsgDeal cannot get device by connect id. msg:{}", msg);
             return false;
         }
-        List<Integer> data = msg.subList(21, msg.size() - 2);
+        List<Integer> data = msg.subList(13, msg.size() - 2);
         gpsLocationManager.storeIfAbsent(generateLocationMsg(data, connectMsg.getDeviceId()));
         sendToDevice(commonResponse.getMsgData(connectMsg.getDeviceId(), msg.get(11), msg.get(12), 0x02, 0x00, 0)
                 , connectMsg.getChannel());
@@ -69,22 +70,48 @@ public class GpsMsgDeal extends ConnectMsgDeal{
 
     private static final BigDecimal DIVIDE = new BigDecimal(Math.pow(10, 6));
 
+
+
     public static LocationMsg generateLocationMsg(List<Integer> msg, String deviceId){
 
-        List<Integer> lngs  = msg.subList(0, 4);
-        List<Integer> lats = msg.subList(4, 8);
+
+        log.info("generateLocationMsg deviceId:{},  msg:{}", deviceId, msg);
+        LocationMsg locationMsg = new LocationMsg();
+        List<Integer> alarms = msg.subList(0, 4);
+        long alarmNumber = DigitalConvertUtils.convert(10, alarms.toArray(new Integer[4]));
+        locationMsg.setVibrationAlarm( (alarmNumber & Long.valueOf("100000000", 2)) != 0);
+
+        List<Integer> lngs  = msg.subList(8, 12);
+        List<Integer> lats = msg.subList(12, 16);
 
         long lng = DigitalConvertUtils.convert(10, lngs.toArray(new Integer[4]));
         long lat = DigitalConvertUtils.convert(10, lats.toArray(new Integer[4]));
-        LocationMsg locationMsg = new LocationMsg();
         locationMsg.setDeviceId(deviceId);
         locationMsg.setLatBigDec(new BigDecimal(lat).divide(DIVIDE, 6, RoundingMode.HALF_UP));
         locationMsg.setLngBigDec(new BigDecimal(lng).divide(DIVIDE, 6, RoundingMode.HALF_UP));
 
         locationMsg.setGpsTime(generateTime(msg));
         locationMsg.setGpsDateTime(new Date(locationMsg.getGpsTime()));
+        locationMsg.setPowerPercent(dealPowerPercent(msg));
         return locationMsg;
 
+    }
+
+    private static Integer dealPowerPercent(List<Integer> msg){
+
+        List<Integer> additionalMsg =  msg.subList(28, msg.size());
+        while (!CollectionUtils.isEmpty(additionalMsg) && additionalMsg.size() > 2) {
+
+            int id = additionalMsg.get(0);
+            int length = additionalMsg.get(1);
+            if (id != 4) {
+
+                additionalMsg = additionalMsg.subList(2 + length, additionalMsg.size());
+                continue;
+            }
+            return additionalMsg.get(3);
+        }
+        return null;
     }
 
 
@@ -92,7 +119,7 @@ public class GpsMsgDeal extends ConnectMsgDeal{
     private static final String FORMAT = "yy-MM-DD-hh-mm-ss";
     private static Long generateTime(List<Integer> msg){
 
-        List<Integer> temp = msg.subList(14, 20);
+        List<Integer> temp = msg.subList(22, 28);
         return generateTime(temp, FORMAT);
     }
 
@@ -146,9 +173,20 @@ public class GpsMsgDeal extends ConnectMsgDeal{
                 2, 0,
                 0, 72,
                 7, 3, 80, 0, 66, 130, 0, 20,
-                0, 0, 0, 0,   0, 76, 0, 1,   1, 211, 140, 113, 6, 205, 144, 61,
-                0, 0, 0, 0, 0, 0, 33, 3, 3, 20, 85, 69, 1, 4, 0, 0, 0, 0, 48, 1, 31, 49, 1, 8, 228, 2, 1, 16, 229, 1, 1, 230, 1, 0, 231, 8, 0, 0, 0, 0, 0, 0, 0, 0, 238, 10, 1, 204, 8, 112, 33, 6, 179, 236, 2, 0, 201, 126);
-        List<Integer> data = msg.subList(21, msg.size() - 2);
+                0, 0, 1, 0,   0, 76, 0, 1,
+                1, 211, 140, 113,   6, 205, 144, 61,
+                0, 0,   0, 0,   0, 0,
+                33, 3, 3, 20, 85, 69,
+                1,  4,   0, 0, 0, 0,
+                48, 1, 31,
+                49, 1, 8,
+                228, 2, 1, 16,
+                229, 1, 1,
+                230, 1, 0,
+                231, 8, 0, 0, 0, 0, 0, 0, 0, 0,
+                238, 10, 1, 204, 8, 112, 33, 6, 179, 236, 2, 0,
+                201, 126);
+        List<Integer> data = msg.subList(13, msg.size() - 2);
         LocationMsg  msg1 = generateLocationMsg(data, "test");
 
         log.info("msg1:{}", msg1);

@@ -38,11 +38,14 @@ public class SetDeviceParameter extends MsgOutServiceAbstract{
         //id
         msgSend.addAll(MsgSendIDEnum.SET_DEVICE_PARAMETER.getMsgId());
         //消息属性
-        msgSend.addAll(Arrays.asList(0x00, 0x09));
+        msgSend.addAll(Arrays.asList(0x00, 0x07));
         //手机号
         msgSend.addAll(phoneToArrays(deviceId));
         //消息流水号
         msgSend.addAll(getMsgNum(MsgSendIDEnum.SET_DEVICE_PARAMETER));
+
+        //消息内容
+        msgSend.addAll(Arrays.asList(sendData));
 
         return generateLastMsg(msgSend);
     }

@@ -79,7 +79,7 @@ public class BatchGpsMsgDeal extends GpsMsgDeal{
         List<LocationMsg> locationMsgs = new ArrayList<>(gpsCount);
         for (int i = 0; i < gpsCount; i++){
             int dataSize = (int) DigitalConvertUtils.convert(10, temp.get(0), temp.get(1));
-            List<Integer> data = temp.subList(2 + 8, dataSize + 2);
+            List<Integer> data = temp.subList(2, dataSize + 2);
             temp = temp.subList(dataSize + 2, temp.size());
             log.info("dataSize:{}, \ndata:{}, \ntemp:{}", dataSize, data, temp);
             LocationMsg locationMsg =

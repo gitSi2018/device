@@ -3,6 +3,7 @@ package com.hzs.device.infrature.tunnel.netty;
 import com.hzs.device.common.constant.ResultCodeConstant;
 import com.hzs.device.common.enums.MsgSendIDEnum;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
+import com.hzs.device.infrature.common.utils.NumberFormatDeal;
 import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
 import com.hzs.device.infrature.tunnel.netty.msgout.MsgOutServiceI;
 import io.netty.channel.Channel;
@@ -65,6 +66,8 @@ public class MsgOutDeal {
 
     public int sendToDevice(List<Integer> newMsgSend, Channel channel){
 
+
+        NumberFormatDeal.printToSixteenFormat(newMsgSend);
         // 拼接头尾 求校验和
 
 //        List<Integer> newMsgSend = new ArrayList<>(msgSend.size() + 3);
