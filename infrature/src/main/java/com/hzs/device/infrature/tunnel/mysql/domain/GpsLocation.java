@@ -44,6 +44,18 @@ public class GpsLocation {
     private Long gpsTime;
 
 
+    /**
+     * 电量百分比
+     */
+    @Column(name = "power_percent")
+    private Integer powerPercent;
+
+    @Column(name = "vibration_alarm")
+    private boolean vibrationAlarm;
+
+
+
+
     @Column(name = "created")
     private Date created;
 

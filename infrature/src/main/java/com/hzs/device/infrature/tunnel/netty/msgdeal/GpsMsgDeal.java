@@ -104,7 +104,7 @@ public class GpsMsgDeal extends ConnectMsgDeal{
 
             int id = additionalMsg.get(0);
             int length = additionalMsg.get(1);
-            if (id != 4) {
+            if (id != 0xe4) {
 
                 additionalMsg = additionalMsg.subList(2 + length, additionalMsg.size());
                 continue;
