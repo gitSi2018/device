@@ -2,10 +2,11 @@ package com.hzs.device.api;
 
 import com.hzs.device.common.enums.MsgSendIDEnum;
 import com.hzs.device.common.msgin.msg.ConnectMsg;
-import com.hzs.device.common.response.ErrorEnum;
 import com.hzs.device.common.response.Result;
+import com.hzs.device.infrature.tunnel.mysql.manager.GpsLocationManager;
 import com.hzs.device.infrature.tunnel.netty.MsgOutDeal;
 import com.hzs.device.infrature.tunnel.netty.manage.ConnectionManager;
+import com.hzs.device.infrature.tunnel.netty.msgdeal.GpsMsgDeal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -16,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: HongZhenSi
@@ -81,7 +79,7 @@ public class QueryDeviceLocationController {
         Integer result = msgOutDeal.sendMsg(deviceId, MsgSendIDEnum.SET_DEVICE_PARAMETER,
                 0x01,
                 0x00, 0x00, 0x00 , 0x78
-                , 0x01  , alarm ? 0x28 : 0x00 );
+                , 0x01  , alarm ? 28 : 0x00 );
         log.info("setDeviceParameter deviceId:{}, result:{}", deviceId, result);
         if (result == 0){
             return Result.succeed();
@@ -101,6 +99,36 @@ public class QueryDeviceLocationController {
         return Result.failed(result);
     }
 
+
+    @Resource
+    private GpsLocationManager gpsLocationManager;
+
+
+    @GetMapping("gps")
+    public Result gpsDeal(){
+
+
+        List<Integer> msg = Arrays.asList(126,
+                2, 0,
+                0, 72,
+                7, 3, 80, 0, 66, 130, 0, 20,
+                0, 0, 1, 0,   0, 76, 0, 1,
+                1, 211, 140, 113,   6, 205, 144, 61,
+                0, 0,   0, 0,   0, 0,
+                33, 3, 3, 20, 85, 69,
+                1,  4,   0, 0, 0, 0,
+                48, 1, 31,
+                49, 1, 8,
+                228, 2, 1, 16,
+                229, 1, 1,
+                230, 1, 0,
+                231, 8, 0, 0, 0, 0, 0, 0, 0, 0,
+                238, 10, 1, 204, 8, 112, 33, 6, 179, 236, 2, 0,
+                201, 126);
+        List<Integer> data = msg.subList(13, msg.size() - 2);
+        gpsLocationManager.storeIfAbsent(GpsMsgDeal.generateLocationMsg(data, "11101"));
+        return Result.succeed();
+    }
 
 
     private static String preDealDeviceId(String deviceId){

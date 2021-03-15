@@ -112,6 +112,7 @@
     <root level="info">
         <appender-ref ref="ASYNC_APPLICATION"/>
         <appender-ref ref="ASYNC_ERROR_FILE"/>
+<!--        <appender-ref ref="CONSOLE"/>-->
 
     </root>
 
